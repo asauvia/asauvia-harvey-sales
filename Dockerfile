@@ -25,7 +25,7 @@ RUN test "$HARVEY_UID" -gt 0 && test "$HARVEY_GID" -gt 0 \
     && groupadd --gid "$HARVEY_GID" harvey \
     && useradd --create-home --uid "$HARVEY_UID" --gid "$HARVEY_GID" harvey \
     && mkdir -p /app/data \
-    && chown -R harvey:harvey /app /ms-playwright
+    && chown -R harvey:harvey /app
 
 # Copy project (config/prompts are typically bind-mounted over these at runtime)
 COPY --chown=harvey:harvey harvey/ harvey/
