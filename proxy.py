@@ -6,10 +6,12 @@ import threading
 PORT = int(os.environ.get("PORT", 10000))
 TARGET = ("127.0.0.1", 5555)
 
+
 def rewrite(data: bytes) -> bytes:
     data = re.sub(rb"(?im)^host:[^\r\n]+", b"Host: 127.0.0.1:5555", data)
     data = re.sub(rb"(?im)^origin:[^\r\n]+", b"Origin: http://127.0.0.1:5555", data)
     return data
+
 
 def pipe(src, dst, is_request=False):
     try:
@@ -28,6 +30,7 @@ def pipe(src, dst, is_request=False):
         except Exception:
             pass
 
+
 def handle(client):
     try:
         upstream = socket.create_connection(TARGET, timeout=10)
@@ -35,6 +38,7 @@ def handle(client):
         threading.Thread(target=pipe, args=(upstream, client, False), daemon=True).start()
     except Exception:
         client.close()
+
 
 def main():
     srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,6 +48,7 @@ def main():
     while True:
         conn, _ = srv.accept()
         threading.Thread(target=handle, args=(conn,), daemon=True).start()
+
 
 if __name__ == "__main__":
     main()
